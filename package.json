@@ -1,0 +1,27 @@
+{
+  "name": "vue-express-login",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "dev:front": "vite",
+    "dev:back": "nodemon server/index.js",
+    "dev": "concurrently 'npm run dev:front' 'npm run dev:back'",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.4",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "vue": "^3.4.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.3",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3",
+    "vite": "^5.1.0"
+  }
+}
