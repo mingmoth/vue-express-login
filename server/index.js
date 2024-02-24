@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser'
 import express from 'express'
 import path from 'path'
 import router from './routes/index.js'
@@ -9,6 +10,9 @@ const port = 3000
 const publicPath = path.join(path.resolve(), "public")
 app.use('/', express.static(publicPath))
 app.use("/src", assets)
+
+app.use(bodyParser.json());
+
 app.use(router)
 
 app.listen(port, () => {
