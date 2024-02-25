@@ -24,7 +24,7 @@ const goLogin = async ({ username, password }) => {
         if(!token) {
             throw new Error('Get token failed')
         }
-        window.localStorage.setItem('token', token)
+        window.localStorage.setItem('user', JSON.stringify(data))
         router.push('/home')
     } catch (error) {
         console.error(error)

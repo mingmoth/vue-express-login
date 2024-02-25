@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import passportAuth from './passport.js'
+import { v4 as uuidv4 } from 'uuid';
 import { getDb, saveDb } from '../helpers/db.js'
 
 const authenticated = passportAuth.authenticate('jwt', { session: false })
@@ -24,6 +25,7 @@ router.post('/auth/register', (req, res) => {
     const salt = bcrypt.genSaltSync(10)
     const hash = bcrypt.hashSync(password, salt)
     db.users[username] = {
+        id: uuidv4(),
         username,
         password: hash
     }
@@ -46,8 +48,6 @@ router.post('/auth/login', (req, res) => {
         if(!bcrypt.compareSync(password, user.password)) {
             return res.json({ status: 'error', message: '帳號或密碼錯誤'})
         }
-
-        console.log('req.user', req?.user)
 
         const userData = { ...user }
         delete userData.password
@@ -80,39 +80,40 @@ router.post('/auth/logout', authenticated, (req, res) => {
 
 router.post('/auth/registerRequest', authenticated, async (req, res) => {
     const username = req?.body?.username
-    if(!username) {
-        res.json({
-            message: 'Can not create passkey without username'
-        })
-    }
-    const cookie = req.headers.cookie
+    // if(!username) {
+    //     res.json({
+    //         message: 'Can not create passkey without username'
+    //     })
+    // }
+    // const cookie = req.headers.cookie
 
-    const values = cookie.split(';').reduce((acc, cur) => {
-        const [key, value] = cur.split('=')
-        acc[key.trim()] = value
-        return acc
-    }, {})
+    // const values = cookie.split(';').reduce((acc, cur) => {
+    //     const [key, value] = cur.split('=')
+    //     acc[key.trim()] = value
+    //     return acc
+    // }, {})
 
-    const CookieUserName = values['username']
+    // const CookieUserName = values['username']
 
-    const sessionUser = req.session.user?.username
-    console.log('username', username)
-    console.log('sessionUser', sessionUser)
-    console.log('CookieUserName', CookieUserName)
-    if(username !== sessionUser || username !==CookieUserName) {
-        return res.json({ status: 'error', message: '權限不足'})
-    }
+    // const sessionUser = req.session.user?.username
+    // console.log('username', username)
+    // console.log('sessionUser', sessionUser)
+    // console.log('CookieUserName', CookieUserName)
+    // if(username !== sessionUser || username !==CookieUserName) {
+    //     return res.json({ status: 'error', message: '權限不足'})
+    // }
+
     // 產生裝置註冊選項
-    // const options = await generateRegistrationOptions({
-    //     rpName,
-    //     rpID: rpId,
-    //     userID: username,
-    //     userName: username,
-    //     // 設定要排除的驗證器，避免驗證器重複註冊
-    //     excludeCredentials: [],
-    //     timeout: 60000
-    // })
-    // console.log('options', options)
+    const options = await generateRegistrationOptions({
+        rpName,
+        rpID: rpId,
+        userID: username,
+        userName: username,
+        // 設定要排除的驗證器，避免驗證器重複註冊
+        excludeCredentials: [],
+        timeout: 60000
+    })
+    console.log('options', options)
 
     // Keep the challenge value in a session.
     // req.session.challenge = options.challenge;

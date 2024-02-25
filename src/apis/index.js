@@ -24,7 +24,7 @@ export const logoutUser = async (payload) => {
     try {
         const response = await axiosInstance.post('/auth/logout', payload)
         console.log('response', response)
-        window.localStorage.removeItem('token')
+        window.localStorage.removeItem('user')
         return response
     } catch (error) {
         console.error(error)
