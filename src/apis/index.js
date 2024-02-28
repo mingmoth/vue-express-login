@@ -31,11 +31,9 @@ export const logoutUser = async (payload) => {
     }
 }
 
-export const getPasskeyCredentialOptions = async (username) => {
+export const getPasskeyCredentialOptions = async (payload) => {
     try {
-        const response = await axiosInstance.post('/auth/registerRequest', {
-            username: username,
-        })
+        const response = await axiosInstance.post('/auth/registerRequest', payload)
         console.log('response', response)
         return response
     } catch (error) {
@@ -43,11 +41,12 @@ export const getPasskeyCredentialOptions = async (username) => {
     }
 }
 
-export const registerCredential = async (credentials) => {
-    console.log('credentials', credentials)
+export const registerCredential = async (payload) => {
+    console.log('payload', payload)
     try {
-        const response = await axiosInstance.post('/auth/registerResponse', {...credentials})
+        const response = await axiosInstance.post('/auth/registerResponse', payload)
         console.log('response', response)
+        return response
     } catch (error) {
         console.error(error)
     }

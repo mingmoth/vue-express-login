@@ -47,13 +47,17 @@ async function checkBrowserSupportCreatePasskey() {
 async function createPasskey() {
     console.log('Start create passkey')
     try {
-        const options = await getPasskeyCredentialOptions(user?.username)
-        console.log('options', options)
+        const { data } = await getPasskeyCredentialOptions(user)
+        console.log('data', data)
 
-        const credentials = await createRegisterCredential(options)
+        const credentials = await createRegisterCredential(data)
 
         // // Send the result to the server and return the promise.
-        const createResult = await registerCredential(credentials)
+        const createResult = await registerCredential({
+            credentials,
+            username: user?.username,
+            id: user?.id
+        })
         console.log('createResult', createResult)
         return createResult
 
