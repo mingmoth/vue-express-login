@@ -16,7 +16,7 @@ app.use("/src", assets)
 app.use(useragent.express());
 
 app.use(session({
-    secret: 'vue-express-login',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true
 }));
