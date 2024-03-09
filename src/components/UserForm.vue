@@ -14,7 +14,7 @@ const submit = () => {
 
 <template>
     <form action="" class="login-form">
-        <input type="text" id="login" aria-labelledby="username-label" autocomplete="username webauthn" autofocus
+        <input type="text" id="login" aria-labelledby="username-label" autocomplete="webauthn" autofocus
             v-model="username" placeholder="username" class="login-input">
         <input type="password" id="password" v-model="password" placeholder="password" class="login-input">
         <button @click.prevent="submit">Go</button>

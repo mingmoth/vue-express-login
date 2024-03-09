@@ -51,3 +51,23 @@ export const registerCredential = async (payload) => {
         console.error(error)
     }
 }
+
+export const signinRequest = async (payload) => {
+    try {
+        const response = await axiosInstance.post('/auth/signinRequest', payload)
+        console.log('response', response)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export const signinResponse = async (payload) => {
+    try {
+        const response = await axiosInstance.post('/auth/signinResponse', payload)
+        console.log('response', response)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}

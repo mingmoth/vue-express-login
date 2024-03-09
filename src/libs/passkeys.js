@@ -50,3 +50,38 @@ export async function createRegisterCredential(options) {
 
     return credential
 }
+
+export async function authenticateWithPasskey(options, conditional = false) {
+    // Base64URL decode the challenge
+    options.challenge = decodeBase64Url(options.challenge);
+
+    // `allowCredentials` empty array invokes an account selector by discoverable credentials.
+    options.allowCredentials = [];
+
+    // Invoke WebAuthn get
+    const cred = await navigator.credentials.get({
+        publicKey: options,
+        // Request a conditional UI
+        mediation: conditional ? 'conditional' : 'optional'
+    });
+
+    const credential = {};
+    credential.id = cred.id;
+    credential.type = cred.type;
+    // Base64URL encode `rawId`
+    credential.rawId = encodeBase64Url(cred.rawId);
+
+    // Base64URL encode some values
+    const clientDataJSON = encodeBase64Url(cred.response.clientDataJSON);
+    const authenticatorData = encodeBase64Url(cred.response.authenticatorData);
+    const signature = encodeBase64Url(cred.response.signature);
+    const userHandle = encodeBase64Url(cred.response.userHandle);
+
+    credential.response = {
+        clientDataJSON,
+        authenticatorData,
+        signature,
+        userHandle,
+    };
+    return credential
+}
