@@ -9,6 +9,7 @@
     "dev:back": "nodemon server/index.js",
     "dev": "concurrently 'npm run dev:front' 'npm run dev:back'",
     "build": "vite build",
+    "start": "NODE_ENV=production node server/index.js",
     "preview": "vite preview"
   },
   "dependencies": {

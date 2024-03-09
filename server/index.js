@@ -10,8 +10,14 @@ const app = express()
 const port = 3000
 
 const publicPath = path.join(path.resolve(), "public")
-app.use('/', express.static(publicPath))
-app.use("/src", assets)
+const distPath = path.join(path.resolve(), "dist")
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(distPath))
+} else {
+    app.use('/', express.static(publicPath))
+    app.use("/src", assets)
+}
 
 app.use(useragent.express());
 
@@ -21,7 +27,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
 app.use(router)
 
