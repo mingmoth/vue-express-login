@@ -2,21 +2,11 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPasskeyCredentialOptions, registerCredential, logoutUser } from '../apis'
-// import { createRegisterCredential } from '../libs/passkeys'
+import { createRegisterCredential } from '../libs/passkeys'
 
 const router = useRouter()
 
-const cookies = document.cookie.split(';').reduce((res, cookie) => {
-    const [key, value] = cookie.split('=')
-    res[key.trim()] = value
-    return res
-}, {})
-
-const username = cookies['username']
-
-console.log('cookies', cookies)
-
-console.log('username', cookies['username'])
+const user = JSON.parse(localStorage.getItem('user'))
 
 async function logout() {
     try {
@@ -57,15 +47,19 @@ async function checkBrowserSupportCreatePasskey() {
 async function createPasskey() {
     console.log('Start create passkey')
     try {
-        const options = await getPasskeyCredentialOptions(username)
-        console.log('options', options)
+        const { data } = await getPasskeyCredentialOptions(user)
+        console.log('data', data)
 
-        // const credentials = await createRegisterCredential(options)
+        const credentials = await createRegisterCredential(data)
 
         // // Send the result to the server and return the promise.
-        // const createResult = await registerCredential(credentials)
-        // console.log('createResult', createResult)
-        // return createResult
+        const createResult = await registerCredential({
+            credentials,
+            username: user?.username,
+            id: user?.id
+        })
+        console.log('createResult', createResult)
+        return createResult
 
     } catch (error) {
         console.error('Fail to create passkey', error)
