@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs'
 import express from 'express'
+import fs from "fs/promises";
 import jwt from 'jsonwebtoken'
 import passportAuth from './passport.js'
+import path from 'path'
 import { v4 as uuidv4 } from 'uuid';
 import {
     generateAuthenticationOptions,
@@ -229,7 +231,7 @@ router.post('/auth/signinResponse', async (req, res) => {
 
         // Find the matching user from the user ID contained in the credential.
         const user = db.users[cred.username]
-        if(!user) {
+        if (!user) {
             throw new Error('User not found.');
         }
 
@@ -290,8 +292,23 @@ router.post('/auth/signinResponse', async (req, res) => {
     }
 })
 
-router.get('/*', (_req, res) => {
-    res.render('index.html.ejs')
-})
+const environment = process.env.NODE_ENV;
+const parseManifest = async () => {
+    if (environment !== "production") return {};
+
+    const manifestPath = path.join(path.resolve(), "dist", ".vite", "manifest.json");
+    const manifestFile = await fs.readFile(manifestPath);
+
+    return JSON.parse(manifestFile);
+};
+
+router.get("/*", async (_req, res) => {
+    const data = {
+        environment,
+        manifest: await parseManifest(),
+    };
+
+    res.render("index.html.ejs", data);
+});
 
 export default router
